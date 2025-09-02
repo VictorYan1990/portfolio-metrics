@@ -72,7 +72,7 @@ async def update_portfolio(portfolio_id: int, portfolio_update: PortfolioCreate)
     
     updated_portfolio = Portfolio(
         id=portfolio_id,
-        **portfolio_update.dict(),
+        **portfolio_update(),
         created_at=portfolios[portfolio_index]["created_at"],
         updated_at=datetime.now()
     )

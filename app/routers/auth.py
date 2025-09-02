@@ -67,7 +67,7 @@ async def login(user_data: UserLogin):
 
     try:
         # Get database session
-        db = next(get_db())
+        db = next(get_db('user_data'))
         
         # Query the users table for username
         logger.debug(f"Querying user for login: {username}")
@@ -150,7 +150,7 @@ async def create_user(user_data: UserCreate):
     hashed_password = hash_password(password)
 
     try:
-        db = next(get_db())
+        db = next(get_db('user_data'))
         
         # Start transaction
         with db.begin():
@@ -203,7 +203,7 @@ async def create_user(user_data: UserCreate):
 async def get_current_user_info(current_user: str = Depends(get_current_user)):
     """Get current user information."""
     try:
-        db = next(get_db())
+        db = next(get_db('user_data'))
         
         # Get user info
         user_result = db.execute(

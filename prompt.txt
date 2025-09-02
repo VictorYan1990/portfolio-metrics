@@ -1,0 +1,3 @@
+I just realized that ISIN is to hard to find. Based on the context above, I think you can get the schemas of the securities table right? Otherthan the four columns I mentioned previously, the table also has a Date type column named "date_of_creation", which is
+automatically filled. Now, can you give me the query to alter the table, dropping ISIN and makes symbol the primary key?
+

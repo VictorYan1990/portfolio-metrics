@@ -8,7 +8,7 @@ def setup_logger(
     level: Optional[str] = None,
     log_file: Optional[str] = None
 ) -> logging.Logger:
-    """Setup application logger."""
+    """Setup application logger with detailed formatting."""
     
     # Get log level from settings or use default
     log_level = level or getattr(settings, 'LOG_LEVEL', 'INFO')
@@ -17,9 +17,12 @@ def setup_logger(
     logger = logging.getLogger(name)
     logger.setLevel(getattr(logging, log_level.upper()))
     
-    # Create formatter
+    # Clear existing handlers to avoid duplicates
+    logger.handlers.clear()
+    
+    # Create detailed formatter with filename and line number
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s() - %(message)s'
     )
     
     # Create console handler
@@ -41,3 +44,26 @@ def setup_logger(
 
 # Create default logger
 logger = setup_logger()
+
+# Configure root logger to also show detailed info
+def configure_root_logging():
+    """Configure root logging for all modules."""
+    root_logger = logging.getLogger()
+    root_logger.setLevel(logging.INFO)
+    
+    # Clear existing handlers
+    root_logger.handlers.clear()
+    
+    # Create formatter with filename and line number
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s() - %(message)s'
+    )
+    
+    # Console handler
+    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler.setLevel(logging.INFO)
+    console_handler.setFormatter(formatter)
+    root_logger.addHandler(console_handler)
+
+# Call this in your main.py to configure logging for all modules
+configure_root_logging()
