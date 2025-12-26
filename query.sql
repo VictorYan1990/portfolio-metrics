@@ -29,3 +29,28 @@ ALTER TABLE securities
 COMMIT;
 
 
+-- Create optimized market_price table
+CREATE TABLE market_price (
+    date DATE NOT NULL,
+    symbol VARCHAR(50) NOT NULL,
+    close_price DECIMAL(15,4) NOT NULL,
+    -- Optional fields (can be NULL for your 90% use case)
+    open_price DECIMAL(15,4),
+    high_price DECIMAL(15,4),
+    low_price DECIMAL(15,4),
+    volume BIGINT,
+    adjusted_close DECIMAL(15,4),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (date, symbol),
+    FOREIGN KEY (symbol) REFERENCES securities(symbol) ON DELETE CASCADE
+);
+
+-- Create optimized indexes for performance
+CREATE INDEX idx_market_price_symbol_date ON market_price(symbol, date);
+CREATE INDEX idx_market_price_date ON market_price(date);
+CREATE INDEX idx_market_price_symbol ON market_price(symbol);
+
+-- Add sample data for testing
+INSERT INTO market_price (date, symbol, close_price, volume) VALUES
+('2024-01-17', 'GOOGL', 141.90, 21000000);

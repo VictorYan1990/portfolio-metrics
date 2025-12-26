@@ -29,5 +29,12 @@ class Settings(BaseSettings):
         env_file = ".env"
         case_sensitive = True
 
+    # EXTERNAL API settings
+    class InstrumentAPI_Settings(BaseSettings):
+        name: str = "Alpha_Vantage"
+        url: str = "https://www.alphavantage.co/query"
+        api_key: str = " 1JUOTRNVQ6GKTMRT"
+
+
 # Create settings instance
 settings = Settings()

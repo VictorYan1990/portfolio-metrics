@@ -3,6 +3,7 @@ from fastapi.security import HTTPBearer
 from pydantic import BaseModel, EmailStr
 from typing import List, Optional
 from app.routers.auth import get_current_user
+from app.util.logger import logger
 
 router = APIRouter(prefix="/users", tags=["users"])
 

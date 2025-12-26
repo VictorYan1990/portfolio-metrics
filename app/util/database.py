@@ -1,13 +1,18 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-import logging
+from app.util.logger import logger
+import os
+from dotenv import load_dotenv
 
-# Database configuration template
+# Load environment variables from .env file (if it exists)
+load_dotenv()
+
+# Database configuration from environment variables with smart defaults
 DB_CONFIG_TEMPLATE = {
-    'user': 'postgres',  # Replace with your PostgreSQL username
-    'password': '1990',  # Replace with your PostgreSQL password
-    'host': 'localhost',
-    'port': 5432
+    'user': os.getenv('DB_USER', 'postgres'),  # Defaults to 'postgres' if not set
+    'password': os.getenv('DB_PASSWORD', '1990'),  # Defaults to '1990' if not set
+    'host': os.getenv('DB_HOST', 'localhost'),  # Defaults to 'localhost' for local dev
+    'port': int(os.getenv('DB_PORT', '5432'))  # Defaults to 5432 if not set
 }
 
 
@@ -43,10 +48,10 @@ def get_db(database_name):
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     db = SessionLocal()
     try:
-        logging.debug(f"Database connection established for {database_name}")
+        logger.info(f"Database connection established for {database_name}")
         yield db
     finally:
-        logging.debug(f"Closing database connection for {database_name}")
+        logger.info(f"Closing database connection for {database_name}")
         db.close()
 
 
@@ -54,6 +59,6 @@ def get_db(database_name):
 if __name__ == "__main__":
     try:
         with get_engine('user_data').connect() as connection:
-            logging.info("Successfully connected to the database user_data.")
+            logger.info("Successfully connected to the database user_data.")
     except Exception as e:
-        logging.error(f"Database connection failed: {e}")
+        logger.error(f"Database connection failed: {e}")

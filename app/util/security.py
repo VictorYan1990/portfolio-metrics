@@ -5,7 +5,7 @@ import hashlib
 import base64
 from datetime import datetime, timedelta
 from typing import Optional
-import logging
+from app.util.logger import logger
 
 SECRET_KEY = os.getenv('SECRET_KEY', 'your_secret_key')
 ACCESS_TOKEN_EXPIRE_HOURS = 1
