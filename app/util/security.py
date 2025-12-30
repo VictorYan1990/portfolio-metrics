@@ -28,7 +28,7 @@ def generate_token(username: str) -> str:
 
 def verify_token(token: str) -> Optional[str]:
     """Verify a token's validity."""
-    logging.debug(f'Verifying token: {token}')
+    logger.debug(f'Verifying token: {token}')
     try:
         decoded_token = base64.urlsafe_b64decode(token).decode()
         username, expiration, signature = decoded_token.rsplit('|', 2)
@@ -39,9 +39,9 @@ def verify_token(token: str) -> Optional[str]:
             if datetime.utcnow() < datetime.strptime(expiration, '%Y-%m-%d %H:%M:%S'):
                 return username
             else:
-                logging.debug("Token valid but expired")
+                logger.debug("Token valid but expired")
         else:
-            logging.debug("Token signature not valid")
+            logger.debug("Token signature not valid")
     except Exception as e:
-        logging.info(f"Token verification exception: {e}")
+        logger.info(f"Token verification exception: {e}")
     return None

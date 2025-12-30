@@ -1,5 +1,5 @@
 from pydantic_settings import BaseSettings
-from typing import List
+from typing import List, Optional
 import os
 
 class Settings(BaseSettings):
@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     # Database settings (for future use)
     DATABASE_URL: str = "sqlite:///./portfolio_metrics.db"
     
-    # Security settings
-    SECRET_KEY: str = "your-secret-key-here-change-in-production"
+    # Security settings (REQUIRED - must be set via environment)
+    SECRET_KEY: str  # No default - must be provided
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # Environment
@@ -29,12 +29,8 @@ class Settings(BaseSettings):
         env_file = ".env"
         case_sensitive = True
 
-    # EXTERNAL API settings
-    class InstrumentAPI_Settings(BaseSettings):
-        name: str = "Alpha_Vantage"
-        url: str = "https://www.alphavantage.co/query"
-        api_key: str = " 1JUOTRNVQ6GKTMRT"
+        case_sensitive = True
 
 
-# Create settings instance
+# Create settings instances
 settings = Settings()

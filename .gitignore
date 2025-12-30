@@ -142,3 +142,6 @@ dmypy.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Kubernetes secrets
+k8s/secret.yaml

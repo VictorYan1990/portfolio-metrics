@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: portfolio-metrics-api
+  namespace: portfolio-metrics
+  labels:
+    app: portfolio-metrics-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: portfolio-metrics-api
+  template:
+    metadata:
+      labels:
+        app: portfolio-metrics-api
+    spec:
+      containers:
+      - name: api
+        image: portfolio-metrics:local
+        imagePullPolicy: Never  # Use local image loaded into kind
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        envFrom:
+        - configMapRef:
+            name: portfolio-config
+        - secretRef:
+            name: portfolio-secrets
+        # Override DB_HOST with Windows host IP (set via ConfigMap update)
+        env:
+        - name: DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: portfolio-config
+              key: DB_HOST
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 30
+          periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+          initialDelaySeconds: 10
+          periodSeconds: 60
+

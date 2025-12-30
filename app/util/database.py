@@ -7,10 +7,11 @@ from dotenv import load_dotenv
 # Load environment variables from .env file (if it exists)
 load_dotenv()
 
-# Database configuration from environment variables with smart defaults
+# Database configuration from environment variables
+# No defaults for sensitive values - must be provided via environment variables
 DB_CONFIG_TEMPLATE = {
     'user': os.getenv('DB_USER', 'postgres'),  # Defaults to 'postgres' if not set
-    'password': os.getenv('DB_PASSWORD', '1990'),  # Defaults to '1990' if not set
+    'password': os.getenv('DB_PASSWORD'),  # REQUIRED - no default for security
     'host': os.getenv('DB_HOST', 'localhost'),  # Defaults to 'localhost' for local dev
     'port': int(os.getenv('DB_PORT', '5432'))  # Defaults to 5432 if not set
 }
@@ -18,9 +19,17 @@ DB_CONFIG_TEMPLATE = {
 
 # Utility function to generate the database URL
 def get_database_url(database_name):
+    """Generate database URL from configuration. Raises error if password not set."""
+    if not DB_CONFIG_TEMPLATE['password']:
+        raise ValueError("DB_PASSWORD environment variable is required")
+    
+    # Add SSL mode for managed services (can be overridden)
+    ssl_mode = os.getenv('DB_SSLMODE', 'prefer')
+    
     return (
         f"postgresql+psycopg2://{DB_CONFIG_TEMPLATE['user']}:{DB_CONFIG_TEMPLATE['password']}@"
         f"{DB_CONFIG_TEMPLATE['host']}:{DB_CONFIG_TEMPLATE['port']}/{database_name}"
+        f"?sslmode={ssl_mode}"
     )
 
 
